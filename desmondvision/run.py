@@ -47,7 +47,9 @@ def main():
                 break
         else:
             try:
-                time.sleep(args.min_period / 1000.0 - (time.time() - start))
+                remaining = args.min_period / 1000.0 - (time.time() - start)
+                if remaining > 0:
+                    time.sleep(remaining)
             except KeyboardInterrupt:
                 break
 
