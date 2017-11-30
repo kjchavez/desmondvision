@@ -4,6 +4,7 @@ import logging
 import sys
 
 from desmond.perception import sensor
+from desmond import types
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -17,13 +18,25 @@ def main():
         logging.error("Failed to open video capture device.")
         sys.exit(1)
 
+    s = sensor.Sensor("Camera")
     while True:
-        ret, image = video_capture.read()
+        ret, frame = video_capture.read()
         if not ret:
             logging.debug("Failed to read frame.")
             continue
 
-        cv2.imshow("frame", image)
+        ret, buf = cv2.imencode('.jpg', frame)
+
+        if not ret:
+            logging.debug("Failed to encode image.")
+            continue
+
+        # One copy...
+        image = types.Image(data=buf.tostring(), encoding=types.Image.JPEG)
+        # Another copy...
+        s.emit(image)  # And the copy to the socket buffer...
+
+        cv2.imshow("frame", frame)
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
 
