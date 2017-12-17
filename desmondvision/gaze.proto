@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package desmond.contrib;
+
+message GazeShift {
+  int32 dx = 1;
+  int32 dy = 2;
+}
