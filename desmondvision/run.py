@@ -24,7 +24,7 @@ def main():
         logging.error("Failed to open video capture device.")
         sys.exit(1)
 
-    s = sensor.Sensor("Camera")
+    s = sensor.Sensor("Camera", types.Image)
     while True:
         start = time.time()
         ret, frame = video_capture.read()
@@ -40,7 +40,7 @@ def main():
         # One copy...
         image = types.Image(data=buf.tostring(), encoding=types.Image.JPEG)
         # Another copy...
-        s.emit(image)  # And the copy to the socket buffer...
+        s.publish(image)  # And the copy to the socket buffer...
         if args.show:
             cv2.imshow("frame", frame)
             if cv2.waitKey(args.min_period) & 0xFF == ord('q'):
